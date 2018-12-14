@@ -23,4 +23,4 @@
 #define SHARED_KEY 0xF0F0
 #define SEG_SIZE 200
 
-void control(int argc, char *argv[]);
+int control(int argc, char *argv[]);

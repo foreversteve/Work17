@@ -1,7 +1,7 @@
 
 #include "game.h"
 
-void control(int argc, char *argv[]){
+int main(int argc, char *argv[]){
 	char cmd[3];
 	cmd[2] = 0;
 	if (argc > 1){
@@ -9,17 +9,17 @@ void control(int argc, char *argv[]){
 	}
 	else{
 		printf("No input given...moving on\n");
-		return;
+		return 0;
 	}
 	//Shared Memory
 	int shmd;
 	char *data;
-
-	shmd = shmget(SHARED_KEY, SEG_SIZE, IPC_CREAT | 0644);
-	data = shmat(shmd,0 ,0);
-	//Semaphore
-	int semd = semget(KEY,1,IPC_CREAT | IPC_EXCL | 0644);
+	int semd;
 	if (strcmp(cmd,"-c")==0){
+		//Semaphore
+		semd = semget(KEY,1,IPC_CREAT | IPC_EXCL | 0644);
+		shmd = shmget(SHARED_KEY, SEG_SIZE, IPC_CREAT | 0644);
+		data = shmat(shmd,0 ,0);
 		if (semd == -1){
 			printf("error is: %s\n",strerror(errno));
 			// semd = semget(KEY,1,0);
@@ -38,10 +38,11 @@ void control(int argc, char *argv[]){
 	}
 	if (strcmp(cmd,"-r")==0){
 		//Shared Mem:
+		shmd = shmget(SHARED_KEY, SEG_SIZE, IPC_CREAT | 0644);
 		shmctl(shmd,IPC_RMID,0);
 		printf("Shared Memory deleted\n");
 		//Semaphore:
-
+		semd = semget(KEY,1,IPC_CREAT | 0644);
 		if (semctl(semd,0,IPC_RMID,0) != -1){
 			printf("Semaphore removed\n");
 		}
@@ -50,6 +51,7 @@ void control(int argc, char *argv[]){
 		}
 		//File:
 		remove("story.txt");
+		return 0;
 	}
 	if (strcmp(cmd,"-v")==0){
 		char bucket[1000];
@@ -58,7 +60,7 @@ void control(int argc, char *argv[]){
 		printf("Content of Story is:%s\n",bucket);
 		close(fd);
 	}
-
 }
+
 
 

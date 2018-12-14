@@ -2,7 +2,7 @@
 
 #include "game.h"
 
-int main(int argc, char *argv[]){
+int main(){
 	// get semaphores
 	// see if it's > 0
 	// if so:
@@ -17,7 +17,7 @@ int main(int argc, char *argv[]){
 	int semd;
 	int r;
 	int v;
-	control(argc,argv);
+
 	semd = semget(KEY,1,IPC_CREAT | IPC_EXCL | 0644);
 	if (semd == -1){
 		// printf("error is: %s\n",strerror(errno));
